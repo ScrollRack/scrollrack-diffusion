@@ -27,7 +27,6 @@ def dummy(images, **kwargs):
 
 pipe.safety_checker = dummy
 
-prompt = "nier automata, cleavage, art by guweiz and pete mohrbacher and josan gonzalez, digital art, highly detailed, intricate, sharp focus, trending on artstation hq, deviantart, pinterest, unreal engine 5, 4 k uhd image"
 
 def create_latents (width, height, seed):
     generator = torch.Generator(device=device)
