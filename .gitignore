@@ -2,3 +2,4 @@ venv/
 env/
 .env
 models/*.pth
+__pycache__/

@@ -8,6 +8,8 @@ import requests
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+negative_prompt = "lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck"
+
 lms = LMSDiscreteScheduler(
     beta_start=0.00085,
     beta_end=0.012,
@@ -15,8 +17,7 @@ lms = LMSDiscreteScheduler(
 )
 
 pipe = StableDiffusionPipeline.from_pretrained(
-    # 'hakurei/waifu-diffusion',
-    "./stable-diffusion-v1-4",
+    "./stable-diffusion-v1-5",
     scheduler=lms,
     torch_type=torch.float16,
     revision="fp16"
@@ -26,7 +27,6 @@ def dummy(images, **kwargs):
     return images, False
 
 pipe.safety_checker = dummy
-
 
 def create_latents (width, height, seed):
     generator = torch.Generator(device=device)
@@ -45,7 +45,7 @@ def generate_image(prompt, seed, width, height, steps, iterations, guidance_scal
     start_time = time.time()
     with autocast("cuda"):
         image_seed, latents = create_latents(width, height, seed)
-        image = pipe(prompt, guidance_scale=guidance_scale, width=width, height=height, num_inference_steps=steps, latents=latents)["sample"][0]
+        image = pipe(prompt, negative_prompt=negative_prompt, guidance_scale=guidance_scale, width=width, height=height, num_inference_steps=steps, latents=latents).images[0]
 
     image = upsampler.upscale(image)
     file_url = uploader.send(image)

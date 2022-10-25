@@ -1,3 +1,6 @@
 [submodule "stable-diffusion-v1-4"]
 	path = stable-diffusion-v1-4
 	url = https://huggingface.co/CompVis/stable-diffusion-v1-4
+[submodule "stable-diffusion-v1-5"]
+	path = stable-diffusion-v1-5
+	url = https://huggingface.co/runwayml/stable-diffusion-v1-5
