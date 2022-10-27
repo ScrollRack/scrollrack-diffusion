@@ -19,12 +19,15 @@ r = redis.Redis(
 )
 
 while True:
-    t2i_payload = r.lpop('generate_images')
-    upscale_payload = r.lpop('xupscale_images')
+    try:
+        t2i_payload = r.lpop('generate_images')
+        upscale_payload = r.lpop('upscale_images')
 
-    if t2i_payload:
-        data = json.loads(t2i_payload)
-        text2image.process(data['prompt'], data)
+        if t2i_payload:
+            data = json.loads(t2i_payload)
+            text2image.process(data['prompt'], data)
+    except:
+        pass
 
     # if upscale_payload:
         # data = json.loads(upscale_payload)
