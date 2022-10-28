@@ -3,6 +3,8 @@ import redis
 import time
 import json
 import text2image
+import upsampler
+import upscaler
 import requests
 from dotenv import load_dotenv
 from os.path import join, dirname
@@ -26,11 +28,12 @@ while True:
         if t2i_payload:
             data = json.loads(t2i_payload)
             text2image.process(data['prompt'], data)
-    except:
+
+        if upscale_payload:
+            data = json.loads(upscale_payload)
+            upscaler.upscale(data)
+    except Exception as e:
+        print(e)
         pass
 
-    # if upscale_payload:
-        # data = json.loads(upscale_payload)
-        # upscale_image(data)
-    
     time.sleep(0.25)

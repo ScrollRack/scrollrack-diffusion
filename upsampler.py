@@ -20,7 +20,7 @@ model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
 model_path = os.path.join('./' + os.environ.get('MODEL_PATH'))
 
 
-def upscale( image, factor=2 ):
+def upscale(image, factor=2):
     upsampler = RealESRGANer(
         scale = 4,
         model_path = model_path,
