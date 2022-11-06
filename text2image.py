@@ -6,21 +6,14 @@ import uploader
 import time
 import requests
 
+torch.backends.cuda.matmul.allow_tf32 = True
+
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 negative_prompt = "lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck"
 
-lms = LMSDiscreteScheduler(
-    beta_start=0.00085,
-    beta_end=0.012,
-    beta_schedule="scaled_linear"
-)
-
 pipe = StableDiffusionPipeline.from_pretrained(
     "./stable-diffusion-v1-5",
-    scheduler=lms,
-    torch_type=torch.float16,
-    revision="fp16"
 ).to(device)
 
 def dummy(images, **kwargs):
@@ -47,8 +40,8 @@ def generate_image(prompt, seed, width, height, steps, iterations, guidance_scal
         image_seed, latents = create_latents(width, height, seed)
         image = pipe(prompt, negative_prompt=negative_prompt, guidance_scale=guidance_scale, width=width, height=height, num_inference_steps=steps, latents=latents).images[0]
 
-    image = upsampler.upscale(image)
-    file_url = uploader.send(image)
+        image = upsampler.upscale(image)
+        file_url = uploader.send(image)
 
     return file_url, time.time() - start_time, image_seed
 
